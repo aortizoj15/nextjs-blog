@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Date from "../components/Date";
-import Layout, { siteTitle } from "../components/layout";
+import Layout, { siteTitle } from "../components/Layout";
 import utilStyles from "../styles/utils.module.css";
 import { getSortedPostsData } from "../lib/posts";
 
@@ -15,6 +15,17 @@ export async function getStaticProps() {
 }
 
 export default function Home({ allPostsData }) {
+  const postsToRender = allPostsData.map(({ id, date, title }) => (
+    <li className={utilStyles.listItem} key={id}>
+      <Link href={`/posts/${id}`}>
+        <a>{title}</a>
+      </Link>
+      <br />
+      <small className={utilStyles.lightText}>
+        <Date dateString={date} />
+      </small>
+    </li>
+  ));
   return (
     <Layout home>
       <Head>
@@ -40,25 +51,21 @@ export default function Home({ allPostsData }) {
             rel="noopener noreferrer"
           >
             LinkedIn
+          </a>{" "}
+          and find my resume{" "}
+          <a
+            href="https://docs.google.com/document/d/19Kjd7Sc2ZaMb9Sk4q2K7_zuZ78vtgmS63pa9xdRu4bA/edit?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
           </a>
           .
         </p>
       </section>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>
-                <a>{title}</a>
-              </Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
-            </li>
-          ))}
-        </ul>
+        <ul className={utilStyles.list}>{postsToRender}</ul>
       </section>
     </Layout>
   );
